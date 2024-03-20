@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from scipy.stats import skellam
 import json
 
@@ -23,9 +23,15 @@ def t_midgame_win_prob(t1, t2, score1, score2, portion_of_game_elapsed):
   r1 = rating_dict[t1]
   r2 = rating_dict[t2]
   return midgame_win_prob(score1, score2, r1, r2, portion_of_game_elapsed)
-
+@app.route('/')
+def home():
+    with open('ratings.json', 'r') as ratings_file:
+        rating_dict = json.load(ratings_file)
+    team_names = list(rating_dict.keys())  # Extracting team names from the dictionary keys
+    return render_template('index.html', team_names=team_names)
 @app.route('/run-function', methods=['POST'])
 def run_function():
+    print(request)
     data = request.json
     result = t_midgame_win_prob(data['team1'], data['team2'], data['score1'], data['score2'], data['portion_elapsed'])
     return jsonify(result=result)
