@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MM Probabilities</title>
+    <title>NCAA Basketball Live(ish) Probabilities</title>
     <style>
         input, select {
             width: 15%; /* Adjust this value to fit your design */
@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <h1>MM Probabilities</h1>
+    <h1>NCAA Basketball Live(ish) Probabilities</h1>
     <div class="form-control">
         <select id="team1">
             {% for team_name in team_names %}
@@ -36,7 +36,14 @@
         <input type="number" id="score2" placeholder="Score 2" min="0" step="1">
     </div>
     <div class="form-control">
-        <input type="number" id="portion_elapsed" placeholder="Portion of Game Elapsed" min="0" max="1" step="0.01">
+        <select id="half">
+            <option value="1">First Half</option>
+            <option value="2">Second Half</option>
+        </select>
+    </div>
+    <div class="form-control">
+        <input type="text" id="time_on_clock" placeholder="Time on clock (MM:SS)" pattern="\d{2}:\d{2}" required title="Time format should be MM:SS">
+
     </div>
     <button onclick="runFunction()">Run</button>
     <div id="result"></div>
@@ -46,18 +53,33 @@
         function runFunction() {
             const score1 = parseInt(document.getElementById('score1').value, 10);
             const score2 = parseInt(document.getElementById('score2').value, 10);
-            const portion_elapsed = parseFloat(document.getElementById('portion_elapsed').value);
+            const half = document.getElementById('half').value;
+            const timeOnClock = document.getElementById('time_on_clock').value;
             const errorDiv = document.getElementById('error');
 
-            // Reset error message
-            errorDiv.innerText = '';
+    // Reset error message
+    errorDiv.innerText = '';
 
-            // Validate inputs
-            if (isNaN(score1) || isNaN(score2) || isNaN(portion_elapsed) || score1 < 0 || score2 < 0 || portion_elapsed < 0 || portion_elapsed > 1) {
-                errorDiv.innerText = 'Please ensure all fields are correctly filled. Score1 and Score2 should be non-negative integers, and Portion of Game Elapsed should be a float between 0 and 1.';
-                return;
-            }
+    // Validate "half" input
+    if (half !== "1" && half !== "2") {
+        errorDiv.innerText = 'Please select a valid half (1 or 2).';
+        return;
+    }
 
+    // Validate "time on clock" input
+    const timePattern = /^([0-5]?[0-9]):([0-5][0-9])$/; // MM:SS format
+    if (!timePattern.test(timeOnClock)) {
+        errorDiv.innerText = 'Please enter the time on clock in MM:SS format.';
+        return;
+    }
+
+    // Validate "score1" and "score2" inputs
+    if (isNaN(score1) || isNaN(score2) || score1 < 0 || score2 < 0) {
+        errorDiv.innerText = 'Score1 and Score2 should be non-negative integers.';
+        return;
+    }
+
+    // If all validations pass, proceed with the fetch request
             const team1 = document.getElementById('team1').value;
             const team2 = document.getElementById('team2').value;
 
@@ -66,7 +88,7 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ team1, team2, score1, score2, portion_elapsed }),
+                body: JSON.stringify({ team1, team2, score1, score2, half, timeOnClock }),
             })
             .then(response => response.json())
             .then(data => {
