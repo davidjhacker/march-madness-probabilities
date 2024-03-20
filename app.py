@@ -31,8 +31,8 @@ def run_function():
     half = int(data['half'])
     time_on_clock = data['timeOnClock']
     minutes, seconds = map(int, time_on_clock.split(':'))
-    
-    total_time = 20 * (half - 1) + minutes + seconds / 60.0  # Adjusted for a total game time of 40 minutes.
+    time_elapsed_in_half = 20 - (minutes + seconds / 60.0)
+    total_time = 20 * (half - 1) + time_elapsed_in_half  # Adjusted for a total game time of 40 minutes.
     portion_elapsed = total_time / 40.0
 
     result = t_midgame_win_prob(data['team1'], data['team2'], data['score1'], data['score2'], portion_elapsed)
