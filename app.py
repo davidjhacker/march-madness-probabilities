@@ -9,11 +9,26 @@ with open('formatted_ratings.json', 'r') as ratings_file:  # Ensure this is the 
 
 def midgame_win_prob(score1, score2, r1, r2, portion_of_game_elapsed):
     score_diff = score1 - score2
+            
     r1_adj, r2_adj = r1 * (1 - portion_of_game_elapsed), r2 * (1 - portion_of_game_elapsed)
-    
-    prob_below_neg_diff = skellam.cdf(0 - score_diff - 1, r1_adj, r2_adj)
-    prob_above_neg_diff = 1 - skellam.cdf(0 - score_diff, r1_adj, r2_adj)
-    return prob_above_neg_diff / (prob_above_neg_diff + prob_below_neg_diff)
+    r1_ot, r2_ot = r1 / 8, r2 / 8
+    #for t1 to win in regulation, the score must stay above the current negative score differential
+    prob_t1_wins_regulation = 1 - skellam.cdf(0 - score_diff, r1_adj, r2_adj)
+    #for a regulation tie, the score diffs must cancel out
+    prob_tie_regulation = skellam.pmf(0 - score_diff, r1_adj, r2_adj)
+    prob_t1_wins_overtime = 1 - skellam.cdf(0, r1_ot, r2_ot)
+    prob_tie_overtime = skellam.pmf(0, r1_ot, r2_ot)
+    if portion_of_game_elapsed == 1:
+        if score_diff == 0:
+            prob_t1_wins_regulation = 0
+            prob_tie_regulation = 1
+        elif score_diff > 0:
+            prob_t1_wins_regulation = 1
+            prob_tie_regulation = 0
+        elif score_diff < 0:
+            prob_t1_wins_regulation = 0
+            prob_tie_regulation = 1
+    return (prob_t1_wins_regulation * (prob_tie_overtime - 1) - prob_t1_wins_overtime * prob_tie_regulation) / (prob_tie_overtime - 1)
 
 def t_midgame_win_prob(t1, t2, score1, score2, portion_of_game_elapsed):
     r1 = rating_dict[t1]
