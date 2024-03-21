@@ -17,6 +17,7 @@ function fetchLiveGames() {
     fetch('/live-games')
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             data.forEach(game => {
                 const gameId = `game-${game.t1}-${game.t2}`;
                 const resultId = `result-${gameId}`;
