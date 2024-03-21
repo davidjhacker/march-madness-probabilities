@@ -7,14 +7,11 @@ import json
 
 app = Flask(__name__)
 
+cached_live_games = {}
+
 with open('formatted_ratings.json', 'r') as ratings_file:  # Ensure this is the correct path to your JSON file.
     rating_dict = json.load(ratings_file)
 
-TEAM_MAP = {
-    'nevada': 'Nevada',
-    'dayton': 'Dayton',
-    'texas': 'Texas',
-}
 
 def midgame_win_prob(score1, score2, r1, r2, portion_of_game_elapsed):
     score_diff = score1 - score2
