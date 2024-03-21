@@ -17,7 +17,6 @@ function fetchLiveGames() {
     fetch('/live-games')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             data.forEach(game => {
                 const gameId = `game-${game.t1}-${game.t2}`;
                 const resultId = `result-${gameId}`;
@@ -79,7 +78,7 @@ function fetchPrediction(game, gameId, resultId) {
 }
     
         fetchLiveGames(); // Run immediately when the page loads // Then every 10 seconds
-        setInterval(fetchPrediction, 10000); 
+        setInterval(fetchLiveGames, 10000); 
     </script>
 </body>
 </html>
