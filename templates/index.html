@@ -2,102 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NCAA Basketball Live(ish) Probabilities</title>
-    <style>
-        input, select {
-            width: 200px; /* Adjust this value to fit your design */
-            box-sizing: border-box; /* Ensures padding doesn't affect overall width */
-        }
-        .form-control {
-            margin-bottom: 10px; /* Adds spacing between form elements */
-        }
-    </style>
+    <title>March Madness Live Predictions</title>
 </head>
 <body>
-    <h1>NCAA Basketball Live(ish) Probabilities</h1>
-    <div class="form-control">
-        <select id="team1">
-            {% for team_name in team_names %}
-            <option value="{{ team_name }}">{{ team_name }}</option>
-            {% endfor %}
-        </select>
+    <h1>March Madness Live Predictions</h1>
+    <div id="games-container">
+        <!-- Games will be loaded here -->
     </div>
-    <div class="form-control">
-        <select id="team2">
-            {% for team_name in team_names %}
-            <option value="{{ team_name }}">{{ team_name }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="form-control">
-        <input type="number" id="score1" placeholder="Score 1" min="0" step="1">
-    </div>
-    <div class="form-control">
-        <input type="number" id="score2" placeholder="Score 2" min="0" step="1">
-    </div>
-    <div class="form-control">
-        <select id="half">
-            <option value="1">First Half</option>
-            <option value="2">Second Half</option>
-        </select>
-    </div>
-    <div class="form-control">
-        <input type="text" id="time_on_clock" placeholder="Time on clock (MM:SS)" pattern="\d{2}:\d{2}" required title="Time format should be MM:SS">
-
-    </div>
-    <button onclick="runFunction()">Calculate</button>
-    <div style="margin-top: 10px" id="result"></div>
-    <div id="error" style="color: red;"></div>
-
     <script>
-        function runFunction() {
-            const score1 = parseInt(document.getElementById('score1').value, 10);
-            const score2 = parseInt(document.getElementById('score2').value, 10);
-            const half = document.getElementById('half').value;
-            const timeOnClock = document.getElementById('time_on_clock').value;
-            const errorDiv = document.getElementById('error');
+// Object to keep track of the last known predictions for each game
+let lastPredictions = {};
 
-    // Reset error message
-    errorDiv.innerText = '';
+function fetchLiveGames() {
+    fetch('/live-games')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(game => {
+                const gameId = `game-${game.t1}-${game.t2}`;
+                const resultId = `result-${gameId}`;
+                let gameElement = document.getElementById(gameId);
 
-    // Validate "half" input
-    if (half !== "1" && half !== "2") {
-        errorDiv.innerText = 'Please select a valid half (1 or 2).';
-        return;
-    }
+                // Update game details only if gameElement doesn't exist
+                if (!gameElement) {
+                    gameElement = document.createElement('div');
+                    gameElement.id = gameId;
+                    document.getElementById('games-container').appendChild(gameElement);
+                }
 
-    // Validate "time on clock" input
-    const timePattern = /^([0-5]?[0-9]):([0-5][0-9])$/; // MM:SS format
-    if (!timePattern.test(timeOnClock)) {
-        errorDiv.innerText = 'Please enter the time on clock in MM:SS format.';
-        return;
-    }
+                // Only set innerHTML for game details if they have changed to avoid flickering
+                const newGameDetailsHTML = `
+                    <h2>${game.t1} vs ${game.t2}</h2>
+                    <p>Score: ${game.score1} - ${game.score2}</p>
+                    <p>${game.half}, ${game.clock}</p>
+                `;
+                if (gameElement.innerHTML.indexOf(newGameDetailsHTML) === -1) {
+                    gameElement.innerHTML = newGameDetailsHTML + `<p id="${resultId}">Predicted Outcome: ${lastPredictions[gameId] || 'Waiting for prediction...'}</p>`;
+                }
 
-    // Validate "score1" and "score2" inputs
-    if (isNaN(score1) || isNaN(score2) || score1 < 0 || score2 < 0) {
-        errorDiv.innerText = 'Score1 and Score2 should be non-negative integers.';
-        return;
-    }
-
-    // If all validations pass, proceed with the fetch request
-            const team1 = document.getElementById('team1').value;
-            const team2 = document.getElementById('team2').value;
-
-            fetch('/run-function', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ team1, team2, score1, score2, half, timeOnClock }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('result').innerText = 'Result: ' + data.result;
-            })
-            .catch((error) => {
-                console.error('Error:', error);
+                // Fetch new prediction and update if different
+                fetchPrediction(game, gameId, resultId);
             });
+        })
+        .catch(error => console.error('Error fetching live games:', error));
+}
+
+
+function fetchPrediction(game, gameId, resultId) {
+    fetch('/run-function', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            team1: game.t1,
+            team2: game.t2,
+            score1: game.score1,
+            score2: game.score2,
+            half: game.half,
+            timeOnClock: game.clock,
+        }),
+    })
+    .then(response => response.json())
+    .then(runFunctionData => {
+        const resultText = `Predicted Outcome: ${runFunctionData.result}`;
+        // Update only if prediction has changed
+        if (lastPredictions[gameId] !== resultText) {
+            document.getElementById(resultId).innerText = resultText;
+            lastPredictions[gameId] = resultText; // Store the new prediction
         }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+        document.getElementById(resultId).innerText = 'Predicted Outcome: Error fetching prediction.';
+    });
+}
+    
+        fetchLiveGames(); // Run immediately when the page loads // Then every 10 seconds
+        setInterval(fetchPrediction, 10000); 
     </script>
 </body>
 </html>
