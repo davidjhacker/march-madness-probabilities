@@ -17,15 +17,19 @@ def get_live_games():
             return 0
         else:
             return score
-    def process_half(half):
-        if half == '':
+    def process_half(half, clock):
+        if half == '' and clock == '':
             return 'PREGAME'
+        if half == '' and clock == ':00':
+            return 'HALFTIME'
         else:
             return half
     
     def process_clock(clock):
         if clock == '':
             return '20:00'
+        if clock == ':00':
+            return '00:00'
         else:
             return clock
 
@@ -35,7 +39,7 @@ def get_live_games():
         't2': TEAM_MAP[g['game']['away']['names']['seo']],
         'score1': process_score(g['game']['home']['score']),
         'score2': process_score(g['game']['away']['score']),
-        'half': process_half(g['game']['currentPeriod']),
+        'half': process_half(g['game']['currentPeriod'], g['game']['contestClock']),
         'clock': process_clock(g['game']['contestClock'])
       } for g in games['games'] if g['game']['videoState'] == 'live']
 
