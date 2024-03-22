@@ -7,7 +7,7 @@ from get_games import get_live_games
 def update_live_games_cache(interval=10):  # Interval in seconds
     while True:
         try:
-            redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
+            redis_url = os.getenv('REDISCLOUD_URL', 'redis://localhost:6379')
             redis_store = redis.from_url(redis_url)
             # This part needs to be adjusted to how you plan to store and share data
             # between your worker and your web process. Options include using a database,
