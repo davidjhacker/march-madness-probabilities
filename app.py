@@ -1,13 +1,15 @@
 from flask import Flask, request, jsonify, render_template
 from get_games import get_live_games
 from scipy.stats import skellam
-import threading
 import time
+import redis
+import os
 import json
 
 app = Flask(__name__)
 
-cached_live_games = {}
+redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
+redis_store = redis.from_url(redis_url)
 
 with open('formatted_ratings.json', 'r') as ratings_file:  # Ensure this is the correct path to your JSON file.
     rating_dict = json.load(ratings_file)
@@ -41,16 +43,6 @@ def t_midgame_win_prob(t1, t2, score1, score2, portion_of_game_elapsed):
     r2 = rating_dict[t2]
     return midgame_win_prob(score1, score2, r1, r2, portion_of_game_elapsed)
 
-def update_live_games_cache(interval=10):  # Interval in seconds
-    global cached_live_games
-    while True:
-        try:
-            cached_live_games = get_live_games()
-            print("Cache updated!")
-        except Exception as e:
-            print(f"Error updating cache: {e}")
-        time.sleep(interval)
-
 @app.route('/')
 def home():
     team_names = list(rating_dict.keys())  # Make sure this is after you've loaded rating_dict
@@ -58,8 +50,8 @@ def home():
 
 @app.route('/live-games')
 def live_games():
-    global cached_live_games
-    return jsonify(cached_live_games)
+    scores = json.loads(redis_store.get('cached_live_games'))
+    return jsonify(scores)
 
 @app.route('/run-function', methods=['POST'])
 def run_function():
@@ -93,9 +85,5 @@ def run_function():
     return jsonify(result=formatted_result)
 
 if __name__ == '__main__':
-    # Start the background thread
-    updater_thread = threading.Thread(target=update_live_games_cache, args=(5,), daemon=True)
-    updater_thread.start()
-    
     # Start the Flask app
     app.run(debug=True)
