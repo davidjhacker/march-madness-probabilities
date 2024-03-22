@@ -81,6 +81,11 @@ def run_function():
     portion_elapsed = total_time / 40.0
 
     result = t_midgame_win_prob(data['team1'], data['team2'], int(score1), int(score2), portion_elapsed)
+    if data['half'] == 'FINAL' or data['half'] == 'FINAL (OT)':
+        if score1 > score2:
+            result = 1
+        else:
+            result = 0
     return jsonify({'team1': data['team1'], 'team2': data['team2'], 'p': result})
 
 if __name__ == '__main__':
