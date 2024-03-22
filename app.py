@@ -60,6 +60,7 @@ def run_function():
         'END 2ND': 2,
         '': 1,
         'FINAL': 2,
+        'FINAL (OT)': 2,
         'HALFTIME': 1,
         'OT': 2,
     }
