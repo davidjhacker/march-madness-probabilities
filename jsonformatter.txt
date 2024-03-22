@@ -2,7 +2,7 @@
   "houston": "Houston",
   "arizona": "Arizona",
   "purdue": "Purdue",
-  "connecticut": "Connecticut",
+  "uconn": "Connecticut",
   "iowa-st": "Iowa State",
   "auburn": "Auburn",
   "tennessee": "Tennessee",
