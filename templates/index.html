@@ -17,6 +17,16 @@ function fetchLiveGames() {
     fetch('/live-games')
         .then(response => response.json())
         .then(data => {
+            const gamesContainer = document.getElementById('games-container');
+            
+            // Clear previous content
+            gamesContainer.innerHTML = '';
+
+            // Check if there are no live games and display a message if true
+            if (data.length === 0) {
+                gamesContainer.innerHTML = '<p>No live games at this time.</p>';
+                return; // Exit the function early
+            }
             data.forEach(game => {
                 const gameId = `game-${game.t1}-${game.t2}`;
                 const resultId = `result-${gameId}`;
@@ -33,7 +43,7 @@ function fetchLiveGames() {
                 const newGameDetailsHTML = `
                     <h2>${game.t1} (${game.seed1}) vs ${game.t2} (${game.seed2})</h2>
                     <p>Score: ${game.score1} - ${game.score2}</p>
-                    <p>${game.half}, ${game.clock}</p>
+                    <p>${game.clock}${game.half}</p>
                 `;
                 if (gameElement.innerHTML.indexOf(newGameDetailsHTML) === -1) {
                     gameElement.innerHTML = newGameDetailsHTML + `<p id="${resultId}">${lastPredictions[gameId] || 'Waiting for prediction...'}</p>`;
