@@ -31,7 +31,7 @@ function fetchLiveGames() {
 
                 // Only set innerHTML for game details if they have changed to avoid flickering
                 const newGameDetailsHTML = `
-                    <h2>${game.t1} vs ${game.t2}</h2>
+                    <h2>${game.t1} (${game.seed1}) vs ${game.t2} (${game.seed2})</h2>
                     <p>Score: ${game.score1} - ${game.score2}</p>
                     <p>${game.half}, ${game.clock}</p>
                 `;
