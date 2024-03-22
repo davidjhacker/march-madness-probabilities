@@ -64,7 +64,8 @@ function fetchPrediction(game, gameId, resultId) {
     })
     .then(response => response.json())
     .then(runFunctionData => {
-        const resultText = `Predicted Outcome: ${runFunctionData.result}`;
+        console.log(runFunctionData)
+        const resultText = `Predicted Outcome: ${runFunctionData.team1} has a ${(runFunctionData.p * 100).toFixed(2)}% chance of beating ${runFunctionData.team2}`;
         // Update only if prediction has changed
         if (lastPredictions[gameId] !== resultText) {
             document.getElementById(resultId).innerText = resultText;

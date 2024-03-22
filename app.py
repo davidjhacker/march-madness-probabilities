@@ -81,8 +81,7 @@ def run_function():
     portion_elapsed = total_time / 40.0
 
     result = t_midgame_win_prob(data['team1'], data['team2'], int(score1), int(score2), portion_elapsed)
-    formatted_result = f"{data['team1']} has a {result * 100:.2f}% chance of beating {data['team2']}"
-    return jsonify(result=formatted_result)
+    return jsonify({'team1': data['team1'], 'team2': data['team2'], 'p': result})
 
 if __name__ == '__main__':
     # Start the Flask app
