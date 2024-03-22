@@ -36,7 +36,7 @@ function fetchLiveGames() {
                     <p>${game.half}, ${game.clock}</p>
                 `;
                 if (gameElement.innerHTML.indexOf(newGameDetailsHTML) === -1) {
-                    gameElement.innerHTML = newGameDetailsHTML + `<p id="${resultId}">Predicted Outcome: ${lastPredictions[gameId] || 'Waiting for prediction...'}</p>`;
+                    gameElement.innerHTML = newGameDetailsHTML + `<p id="${resultId}">${lastPredictions[gameId] || 'Waiting for prediction...'}</p>`;
                 }
 
                 // Fetch new prediction and update if different
