@@ -41,7 +41,7 @@
   "colorado-st": "Colorado State",
   "boise-st": "Boise State",
   "ohio-st": "Ohio State",
-  "florida-atlantic": "Florida Atlantic",
+  "fla-atlantic": "Florida Atlantic",
   "nevada": "Nevada",
   "iowa": "Iowa",
   "dayton": "Dayton",
