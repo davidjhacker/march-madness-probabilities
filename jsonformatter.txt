@@ -106,7 +106,7 @@
   "louisiana-tech": "Louisiana Tech",
   "arizona-st": "Arizona State",
   "california": "California",
-  "alabama-birmingham": "Alabama Birmingham",
+  "uab": "Alabama Birmingham",
   "southern-illinois": "Southern Illinois",
   "notre-dame": "Notre Dame",
   "yale": "Yale",
