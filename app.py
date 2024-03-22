@@ -8,7 +8,7 @@ import json
 
 app = Flask(__name__)
 
-redis_url = os.getenv('REDIS_URL', 'redis://localhost:6379')
+redis_url = os.getenv('REDISCLOUD_URL', 'redis://localhost:6379')
 redis_store = redis.from_url(redis_url)
 
 with open('formatted_ratings.json', 'r') as ratings_file:  # Ensure this is the correct path to your JSON file.
