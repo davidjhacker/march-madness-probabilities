@@ -139,7 +139,7 @@
   "missouri-st": "Missouri State",
   "tarleton-st": "Tarleton State",
   "drexel": "Drexel",
-  "western-kentucky": "Western Kentucky",
+  "western-ky": "Western Kentucky",
   "wyoming": "Wyoming",
   "murray-st": "Murray State",
   "south-dakota-st": "South Dakota State",
