@@ -208,7 +208,7 @@
   "california-riverside": "California Riverside",
   "northern-colorado": "Northern Colorado",
   "brown": "Brown",
-  "saint-peters": "Saint Peters",
+  "st-peters": "Saint Peters",
   "georgia-st": "Georgia State",
   "abilene-christian": "Abilene Christian",
   "air-force": "Air Force",
