@@ -113,7 +113,7 @@
   "georgia-tech": "Georgia Tech",
   "northern-iowa": "Northern Iowa",
   "charlotte": "Charlotte",
-  "college-of-charleston": "College Of Charleston",
+  "col-of-charleston": "College Of Charleston",
   "west-virginia": "West Virginia",
   "tulane": "Tulane",
   "davidson": "Davidson",
