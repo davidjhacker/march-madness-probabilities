@@ -1,7 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from get_games import get_live_games
 from scipy.stats import skellam
-import time
 import redis
 import os
 import json

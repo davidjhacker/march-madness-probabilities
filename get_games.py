@@ -40,7 +40,9 @@ def get_live_games():
         'score1': process_score(g['game']['home']['score']),
         'score2': process_score(g['game']['away']['score']),
         'half': process_half(g['game']['currentPeriod'], g['game']['contestClock']),
-        'clock': process_clock(g['game']['contestClock'])
+        'clock': process_clock(g['game']['contestClock']),
+        'seed1': g['game']['home']['seed'],
+        'seed2': g['game']['away']['seed'],
       } for g in games['games'] if g['game']['videoState'] == 'live']
 
     return live_games
