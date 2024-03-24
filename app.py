@@ -63,7 +63,7 @@ def run_function():
         'FINAL (OT)': 2,
         'HALFTIME': 1,
         'OT': 2,
-        '20T': 2,
+        '2OT': 2,
     }
     data = request.json
     half = int(half_map[data['half']])
